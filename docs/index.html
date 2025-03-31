@@ -18,7 +18,7 @@
         }
         .tab-button {
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; 
         }
         .tab-button:hover {
             background-color: rgba(147, 51, 234, 0.05);
@@ -533,7 +533,7 @@
 
                 const result = energyDetails[selectedEnergy];
                 if (result) {
-                    renderResult({
+                    renderResult({ 
                         ...result,
                         title: `Crystal Recommendation for ${result.title}`
                     });
