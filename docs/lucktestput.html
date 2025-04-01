@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Luck Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.294.0/lucide.min.js"></script>
+
+    <!-- 导航栏 -->
+    <nav class="w-full bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="w-full border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-6 py-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <i data-lucide="gem" class="h-6 w-6 text-purple-600 mr-2"></i>
+                        <span class="text-lg font-semibold text-purple-800">Crystal Energy Match</span>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="index.html" 
+                           class="nav-link text-gray-600 hover:text-purple-600 transition duration-300 flex items-center group">
+                            <div class="flex items-center">
+                                <i data-lucide="home" class="h-4 w-4 mr-1"></i>
+                                <span>Home</span>
+                            </div>
+                            <div class="h-0.5 w-0 group-hover:w-full bg-purple-600 transition-all duration-300"></div>
+                        </a>
+                        
+                        <div class="cursor-default">
+                            <div class="text-purple-800 font-medium flex items-center">
+                                <i data-lucide="sparkles" class="h-4 w-4 mr-1"></i>
+                                <span>Luck Test</span>
+                            </div>
+                            <div class="h-0.5 w-full bg-purple-600 mt-0.5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 添加一个占位 div 来防止内容被导航栏遮挡 -->
+    <div class="h-16"></div>
+
+    <style>
+        :root {
+            --primary-color: #9333ea;
+            --secondary-color: #a855f7;
+            --text-color: #333;
+            --light-text: #777;
+            --bg-color: #f7f9fc;
+            --card-bg: white;
+            --shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            padding-top: 2rem;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .luck-display-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .luck-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-color) 0%, #f0f0f0 0%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+        
+        .luck-inner-circle {
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .luck-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button {
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.3);
+        }
+        
+        .test-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(147, 51, 234, 0.4);
+        }
+        
+        .test-button:active {
+            transform: translateY(1px);
+        }
+        
+        .result-text {
+            font-size: 20px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: 600;
+            min-height: 30px;
+        }
+        
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .loading div {
+            width: 15px;
+            height: 15px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 5px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .loading div:nth-child(1) { animation-delay: -0.32s; }
+        .loading div:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 10px;
+            z-index: 999;
+            opacity: 0;
+            animation: fall 4s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .restart {
+            margin-top: 20px;
+            color: var(--light-text);
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+
+        .share-section {
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .share-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--light-text);
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .share-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-button:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        .history-list {
+            list-style: none;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-date {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .history-value {
+            font-weight: bold;
+        }
+
+        .nav-link:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Luck Test</h1>
+            <p class="description">Test your luck today and see what the day holds for you!</p>
+        </div>
+        
+        <div class="content">
+            <div class="luck-display-container">
+                <div class="luck-circle" id="luckCircle">
+                    <div class="luck-inner-circle">
+                        <div class="luck-display" id="luckDisplay">?</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            
+            <button class="test-button" id="testButton">Test My Luck</button>
+            
+            <p class="result-text" id="resultText"></p>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <p class="stat-title">Attempts</p>
+                    <p class="stat-value" id="attemptsValue">0</p>
+                </div>
+                <div class="stat-box">
+                    <p class="stat-title">Best Luck</p>
+                    <p class="stat-value" id="bestLuckValue">0</p>
+                </div>
+                <div class="stat-box">
+                    <p class="stat-title">Average Luck</p>
+                    <p class="stat-value" id="averageLuckValue">0</p>
+                </div>
+            </div>
+
+            <p class="restart" id="restart">Restart</p>
+
+            <div class="share-section">
+                <p class="share-title">Share your luck with friends</p>
+                <div class="share-buttons">
+                    <div class="share-button" id="shareFacebook">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#3b5998">
+                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                        </svg>
+                    </div>
+                    <div class="share-button" id="shareTwitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#1DA1F2">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+                        </svg>
+                    </div>
+                    <div class="share-button" id="shareWhatsapp">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path>
+                        </svg>
+                    </div>
+                    <div class="share-button" id="copyLink">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Your Luck History</h3>
+                <button class="close-button" id="closeHistory">&times;</button>
+            </div>
+            <div id="historyContent">
+                <ul class="history-list" id="historyList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 Lucide 图标
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+
+        // DOM Elements
+        const luckDisplay = document.getElementById('luckDisplay');
+        const luckCircle = document.getElementById('luckCircle');
+        const testButton = document.getElementById('testButton');
+        const resultText = document.getElementById('resultText');
+        const loading = document.getElementById('loading');
+        const attemptsValue = document.getElementById('attemptsValue');
+        const bestLuckValue = document.getElementById('bestLuckValue');
+        const averageLuckValue = document.getElementById('averageLuckValue');
+        const restartButton = document.getElementById('restart');
+        const historyModal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        const closeHistory = document.getElementById('closeHistory');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareWhatsapp = document.getElementById('shareWhatsapp');
+        const copyLink = document.getElementById('copyLink');
+        
+        // Luck result descriptions
+        const luckDescriptions = {
+            range1: {min: 1, max: 20, text: "Extremely unlucky! Better stay home today!"},
+            range2: {min: 21, max: 40, text: "Not very lucky, proceed with caution."},
+            range3: {min: 41, max: 60, text: "Average luck, keep a normal mindset."},
+            range4: {min: 61, max: 80, text: "Pretty lucky! Try something new today."},
+            range5: {min: 81, max: 99, text: "Extremely lucky! Go for it!"},
+            range6: {min: 100, max: 100, text: "Divine luck! Something wonderful will happen today!"}
+        };
+        
+        // State variables
+        let isAnimating = false;
+        let attempts = 0;
+        let bestLuck = 0;
+        let totalLuck = 0;
+        let averageLuck = 0;
+        let luckHistory = [];
+        
+        // Generate random luck value
+        function generateLuck() {
+            // Most cases generate random number between 1-100
+            let baseRandom = Math.floor(Math.random() * 100) + 1;
+            
+            // Small chance (about 1%) to return 100
+            const superLuckyChance = Math.random();
+            if (superLuckyChance > 0.99) {
+                return 100;
+            }
+            
+            return baseRandom;
+        }
+        
+        // Get luck description based on value
+        function getLuckDescription(luckValue) {
+            for (const range in luckDescriptions) {
+                const { min, max, text } = luckDescriptions[range];
+                if (luckValue >= min && luckValue <= max) {
+                    return text;
+                }
+            }
+            return "Unknown luck level";
+        }
+        
+        // Update circular progress based on luck
+        function updateProgress(luckValue) {
+            const percentage = luckValue;
+            luckCircle.style.background = `conic-gradient(var(--primary-color) ${percentage}%, #f0f0f0 0%)`;
+        }
+        
+        // Show loading animation
+        function showLoading() {
+            loading.style.display = 'block';
+            testButton.style.display = 'none';
+        }
+        
+        // Hide loading animation
+        function hideLoading() {
+            loading.style.display = 'none';
+            testButton.style.display = 'block';
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#9333ea', '#a855f7', '#ffbe0b', '#fb5607', '#8338ec', '#3a86ff'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // Start luck test
+        function startLuckTest() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            
+            // Show loading animation
+            showLoading();
+            
+            // Final luck value
+            const finalLuck = generateLuck();
+            
+            // Set delay before starting animation
+            setTimeout(() => {
+                hideLoading();
+                
+                // Show animation
+                let counter = 0;
+                updateProgress(0);
+                
+                const animationInterval = setInterval(() => {
+                    // Gradually approach final value
+                    counter++;
+                    const progress = Math.min(counter / 20, 1);
+                    const easedProgress = 1 - Math.pow(1 - progress, 3); // Easing effect
+                    
+                    // Random fluctuation near final value until showing real value
+                    if (progress < 1) {
+                        const randomVariation = Math.floor(Math.random() * 20) - 10;
+                        const currentDisplay = Math.floor(finalLuck * easedProgress) + randomVariation;
+                        const clampedValue = Math.max(1, Math.min(100, currentDisplay));
+                        luckDisplay.textContent = clampedValue;
+                        updateProgress(clampedValue);
+                    } else {
+                        luckDisplay.textContent = finalLuck;
+                        updateProgress(finalLuck);
+                        
+                        // Stop animation
+                        clearInterval(animationInterval);
+                        isAnimating = false;
+                        
+                        // Get and display luck description
+                        const description = getLuckDescription(finalLuck);
+                        resultText.textContent = description;
+                        
+                        // Add confetti if 100
+                        if (finalLuck === 100) {
+                            createConfetti();
+                        }
+
+                        // Update stats
+                        attempts++;
+                        totalLuck += finalLuck;
+                        averageLuck = totalLuck / attempts;
+                        bestLuck = Math.max(bestLuck, finalLuck);
+
+                        // Update display
+                        attemptsValue.textContent = attempts;
+                        bestLuckValue.textContent = bestLuck;
+                        averageLuckValue.textContent = averageLuck.toFixed(2);
+
+                        // Update history
+                        luckHistory.push({
+                            date: new Date().toLocaleString(),
+                            luck: finalLuck
+                        });
+                    }
+                }, 50);
+            }, 500);
+        }
+
+        // Restart luck test
+        function restartLuckTest() {
+            attempts = 0;
+            bestLuck = 0;
+            totalLuck = 0;
+            averageLuck = 0;
+            luckHistory = [];
+            attemptsValue.textContent = attempts;
+            bestLuckValue.textContent = bestLuck;
+            averageLuckValue.textContent = averageLuck;
+            luckDisplay.textContent = '?';
+            resultText.textContent = '';
+            luckCircle.style.background = `conic-gradient(var(--primary-color) 0%, #f0f0f0 0%)`;
+        }
+
+        // Show history modal
+        function showHistory() {
+            historyModal.style.display = 'flex';
+            historyList.innerHTML = '';
+            luckHistory.forEach(item => {
+                const li = document.createElement('li');
+                li.classList.add('history-item');
+                li.innerHTML = `<span class="history-date">${item.date}</span><span class="history-value">${item.luck}</span>`;
+                historyList.appendChild(li);
+            });
+        }
+
+        // Share result
+        function shareResult(platform) {
+            const shareText = encodeURIComponent(`I got ${luckDisplay.textContent} luck on the Luck Test!`);
+            let shareUrl = '';
+
+            switch (platform) {
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${shareText}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(window.location.href)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `whatsapp://send?text=${shareText} ${encodeURIComponent(window.location.href)}`;
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(`${shareText} ${window.location.href}`);
+                    alert('Link copied to clipboard!');
+                    return;
+            }
+
+            window.open(shareUrl, '_blank');
+        }
+        
+        // Add event listeners
+        testButton.addEventListener('click', startLuckTest);
+        restartButton.addEventListener('click', restartLuckTest);
+        closeHistory.addEventListener('click', () => historyModal.style.display = 'none');
+        shareFacebook.addEventListener('click', () => shareResult('facebook'));
+        shareTwitter.addEventListener('click', () => shareResult('twitter'));
+        shareWhatsapp.addEventListener('click', () => shareResult('whatsapp'));
+        copyLink.addEventListener('click', () => shareResult('copy'));
+
+        // Show history on page load if there is history
+        if (luckHistory.length > 0) {
+            showHistory();
+        }
+    </script>
+</body>
+</html>
